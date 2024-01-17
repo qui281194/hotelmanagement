@@ -22,7 +22,7 @@ public class ServicedvDto {
     private String description;
     private Integer quantity;
     private Integer serviceDuration;
-    private String status;
+    private boolean status;
     private String image;
 
     // ServiceCategoryDto thay vì ServiceCategory để tránh vòng lặp khi chuyển đổi
