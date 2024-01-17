@@ -4,9 +4,13 @@
  */
 package fpt.aptech.hotelapi.controller;
 
+import fpt.aptech.hotelapi.dto.ServiceCategoryDto;
 import fpt.aptech.hotelapi.dto.ServicedvDto;
+import fpt.aptech.hotelapi.models.Servicedv;
+import fpt.aptech.hotelapi.service.DVService;
 import fpt.aptech.hotelapi.service.ServiceDV;
 import java.util.List;
+import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
@@ -28,47 +32,60 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequestMapping("/api/servicedvcontroller")
 public class ServiceDvAPIController {
-    @Autowired
-    private ServiceDV serviceDV;
-
-    public ServiceDvAPIController(ServiceDV serviceDV) {
-        this.serviceDV = serviceDV;
-    }
-    
-    
-    // Lấy danh sách tất cả các dịch vụ
-    @GetMapping("/all")
-    public ResponseEntity<List<ServicedvDto>> function_getAllServices() {
-        List<ServicedvDto> services = serviceDV.getAllServices();
+     @Autowired
+    private DVService dvService;
+   @org.springframework.beans.factory.annotation.Value("${upload.path}")
+    private String filterUpload;
+   
+   @GetMapping("/all")
+    public ResponseEntity<List<Servicedv>> getAllServices() {
+        List<Servicedv> services = dvService.findAll();
         return new ResponseEntity<>(services, HttpStatus.OK);
     }
-    
-     // Tạo mới một dịch vụ
+    @GetMapping("/categories")
+    public ResponseEntity<List<ServiceCategoryDto>> getAllCategories() {
+        List<ServiceCategoryDto> categories = dvService.getAllCategories();
+        return new ResponseEntity<>(categories, HttpStatus.OK);
+    }
+   
+// 
     @PostMapping("/create")
-    public ResponseEntity<ServicedvDto> function_createService(@RequestBody ServicedvDto serviceDto) {
-        ServicedvDto createdService = serviceDV.createService(serviceDto);
-        return new ResponseEntity<>(createdService, HttpStatus.CREATED);
+    public Servicedv function_createNewRoomType(@RequestBody Servicedv newdvService) {
+        return dvService.saveImage(newdvService);
     }
-    
-    // Xóa một dịch vụ dựa trên ID
-    @DeleteMapping("/delete/{serviceId}")
-    public ResponseEntity<Void> function_deleteService(@PathVariable Integer serviceId) {
-        serviceDV.deleteService(serviceId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    // Xóa dịch vụ theo ID
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteService(@PathVariable Integer id) {
+        try {
+            dvService.deleteById(id);
+            return new ResponseEntity<>("Xóa dịch vụ thành công", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Xóa dịch vụ thất bại", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-    
-    // Sửa thông tin một dịch vụ
-    @PutMapping("/edit/{serviceId}")
-    public ResponseEntity<ServicedvDto> function_updateService(@PathVariable Integer serviceId,
-                                                      @RequestBody ServicedvDto updatedServiceDto) {
-        ServicedvDto updatedService = serviceDV.updateService(serviceId, updatedServiceDto);
-        return new ResponseEntity<>(updatedService, HttpStatus.OK);
+    @GetMapping("/edit/{id}")
+public ResponseEntity<Servicedv> getEditService(@PathVariable Integer id) {
+    Servicedv serviceToEdit = dvService.getServiceDetails(id);
+    if (serviceToEdit != null) {
+        return new ResponseEntity<>(serviceToEdit, HttpStatus.OK);
+    } else {
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+}
 
-    // Tìm kiếm dịch vụ theo tên
-    @GetMapping("/services/search")
-    public ResponseEntity<List<ServicedvDto>> function_searchServicesByName(@RequestParam String name) {
-        List<ServicedvDto> searchedServices = serviceDV.searchServicesByName(name);
+    // Chỉnh sửa thông tin dịch vụ
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<Servicedv> editService(@PathVariable Integer id, @RequestBody Servicedv editedService) {
+        Servicedv updatedService = dvService.editService(id, editedService);
+        if (updatedService != null) {
+            return new ResponseEntity<>(updatedService, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @GetMapping("/search")
+    public ResponseEntity<List<Servicedv>> searchServices(@RequestParam("name") String name) {
+        List<Servicedv> searchedServices = dvService.searchServices(name);
         return new ResponseEntity<>(searchedServices, HttpStatus.OK);
     }
 

@@ -51,18 +51,43 @@ public class ServiceCategoryAPIController {
         return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);
     }
     
-    // Xóa một loại dịch vụ dựa trên ID
-    @DeleteMapping("/delete/{categoryId}")
-    public ResponseEntity<Void> function_deleteServiceCategory(@PathVariable Integer categoryId) {
-        serviceDV.deleteServiceCategory(categoryId);
+    // Delete a service category by ID
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteServiceCategory(@PathVariable Integer id) {
+        serviceDV.deleteServiceCategory(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    // Xóa một loại dịch vụ dựa trên danh sách ID
+    @DeleteMapping("/deleteMulti")
+    public ResponseEntity<String> deleteAll(@RequestBody List<Integer> categoryIds) {
+        try {
+            if (categoryIds != null && !categoryIds.isEmpty()) {
+                serviceDV.deleteConfig(categoryIds);
+                return ResponseEntity.ok("Successfully deleted selected ServiceCategory");
+            } else {
+                return ResponseEntity.badRequest().body("ServiceCategory IDs list is empty");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Internal Server Error");
+        }
+    }
+    // Lấy thông tin một loại dịch vụ theo ID
+    @GetMapping("/edit/{id}")
+    public ResponseEntity<ServiceCategoryDto> getServiceCategoryById(@PathVariable Integer id) {
+        ServiceCategoryDto categoryDto = serviceDV.findByIdCategory(id);
+
+        if (categoryDto != null) {
+            return new ResponseEntity<>(categoryDto, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     // Sửa thông tin một loại dịch vụ
-    @PutMapping("/edit/{categoryId}")
-    public ResponseEntity<ServiceCategoryDto> function_updateServiceCategory(@PathVariable Integer categoryId,
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<ServiceCategoryDto> function_updateServiceCategory(@PathVariable Integer id,
                                                                    @RequestBody ServiceCategoryDto updatedCategoryDto) {
-        ServiceCategoryDto updatedCategory = serviceDV.updateServiceCategory(categoryId, updatedCategoryDto);
+        ServiceCategoryDto updatedCategory = serviceDV.updateServiceCategory(id, updatedCategoryDto);
         return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
     }
     // Tìm kiếm loại dịch vụ theo tên (không phân biệt chữ hoa/chữ thường)

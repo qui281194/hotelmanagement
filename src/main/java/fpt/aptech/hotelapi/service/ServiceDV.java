@@ -11,6 +11,10 @@ import fpt.aptech.hotelapi.models.Servicedv;
 import fpt.aptech.hotelapi.repository.ServiceCategoryRepository;
 import fpt.aptech.hotelapi.repository.ServicedvRepository;
 import io.micrometer.common.util.StringUtils;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,11 +31,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class ServiceDV {
 
-    @Autowired
+   @Autowired
     private ServiceCategoryRepository serviceCategoryRepository;
 
     @Autowired
     private ServicedvRepository servicedvRepository;
+    @PersistenceContext
+    private EntityManager entity;
 
     // Lấy danh sách tất cả các loại dịch vụ
     public List<ServiceCategoryDto> getAllServiceCategories() {
@@ -40,6 +46,7 @@ public class ServiceDV {
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
+
     // Tìm kiếm loại dịch vụ theo tên (không phân biệt chữ hoa/chữ thường)
     public List<ServiceCategory> searchServiceCategoriesByName(String name) {
         return serviceCategoryRepository.findByName(name);
@@ -52,21 +59,7 @@ public class ServiceDV {
         return convertToDto(savedCategory);
     }
 
-    // Lấy danh sách tất cả các dịch vụ
-    public List<ServicedvDto> getAllServices() {
-        List<Servicedv> services = servicedvRepository.findAll();
-        return services.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
-
-    // Tạo mới một dịch vụ
-    public ServicedvDto createService(ServicedvDto serviceDto) {
-        Servicedv service = convertToEntity(serviceDto);
-        Servicedv savedService = servicedvRepository.save(service);
-        return convertToDto(savedService);
-    }
-
+    
     // Phương thức chuyển đổi entity thành DTO cho ServiceCategory
     private ServiceCategoryDto convertToDto(ServiceCategory category) {
         ServiceCategoryDto categoryDto = new ServiceCategoryDto();
@@ -81,32 +74,33 @@ public class ServiceDV {
         return category;
     }
 
-    // Phương thức chuyển đổi entity thành DTO cho Servicedv
-    private ServicedvDto convertToDto(Servicedv service) {
-        ServicedvDto serviceDto = new ServicedvDto();
-        BeanUtils.copyProperties(service, serviceDto);
-        // Chuyển đổi ServiceCategory thành ServiceCategoryDto
-        serviceDto.setCategory(convertToDto(service.getCategory()));
-        return serviceDto;
-    }
+    
 
-    // Phương thức chuyển đổi DTO thành entity cho Servicedv
-    private Servicedv convertToEntity(ServicedvDto serviceDto) {
-        Servicedv service = new Servicedv();
-        BeanUtils.copyProperties(serviceDto, service);
-        // Chuyển đổi ServiceCategoryDto thành ServiceCategory
-        service.setCategory(convertToEntity(serviceDto.getCategory()));
-        return service;
-    }
+    
+
     // Xóa một loại dịch vụ dựa trên ID
-    public void deleteServiceCategory(Integer categoryId) {
-        serviceCategoryRepository.deleteById(categoryId);
+    public void deleteServiceCategory(Integer id) {
+        serviceCategoryRepository.deleteById(id);
     }
+     @Transactional
+    public int deleteConfig(List<Integer>codeList){
+    
+         Query query = entity.createQuery("DELETE FROM ServiceCategory p WHERE p.id IN (:codeList)");
+                query.setParameter("codeList", codeList);
+                return query.executeUpdate();
+    }
+    public ServiceCategoryDto findByIdCategory(Integer id) {
+    return serviceCategoryRepository.findById(id)
+            .map(this::convertToDto)
+            .orElse(null); // Hoặc bạn có thể throw một exception nếu muốn
+}
+
+    
 
     // Sửa thông tin một loại dịch vụ
-    public ServiceCategoryDto updateServiceCategory(Integer categoryId, ServiceCategoryDto updatedCategoryDto) {
+    public ServiceCategoryDto updateServiceCategory(Integer id, ServiceCategoryDto updatedCategoryDto) {
         // Kiểm tra xem loại dịch vụ có tồn tại hay không
-        ServiceCategory existingCategory = serviceCategoryRepository.findById(categoryId)
+        ServiceCategory existingCategory = serviceCategoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy loại dịch vụ"));
 
         // Cập nhật thông tin loại dịch vụ
@@ -122,25 +116,18 @@ public class ServiceDV {
         servicedvRepository.deleteById(serviceId);
     }
 
-    // Sửa thông tin một dịch vụ
-    public ServicedvDto updateService(Integer serviceId, ServicedvDto updatedServiceDto) {
-        // Kiểm tra xem dịch vụ có tồn tại hay không
-        Servicedv existingService = servicedvRepository.findById(serviceId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy dịch vụ"));
-
-        // Cập nhật thông tin dịch vụ
-        BeanUtils.copyProperties(updatedServiceDto, existingService);
-        Servicedv savedService = servicedvRepository.save(existingService);
-
-        // Chuyển đổi và trả về DTO của dịch vụ đã được cập nhật
-        return convertToDto(savedService);
+    // Lấy danh sách tất cả các danh mục
+    public List<ServiceCategoryDto> getAllCategories() {
+        List<ServiceCategory> categories = serviceCategoryRepository.findAll();
+        return mapCategoriesToDto(categories);
     }
 
-    // Tìm kiếm dịch vụ theo tên
-    public List<ServicedvDto> searchServicesByName(String name) {
-        List<Servicedv> services = servicedvRepository.findByNameIgnoreCaseContaining(name);
-        return services.stream()
-                .map(this::convertToDto)
+    // Chuyển đổi danh sách ServiceCategory thành danh sách ServiceCategoryDto
+    private List<ServiceCategoryDto> mapCategoriesToDto(List<ServiceCategory> categories) {
+        // Cài đặt logic chuyển đổi ở đây
+        // Dưới đây là một ví dụ đơn giản
+        return categories.stream()
+                .map(category -> new ServiceCategoryDto(category.getId(), category.getName()))
                 .collect(Collectors.toList());
     }
     

@@ -10,6 +10,8 @@ import java.util.List;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 /**
  *
@@ -18,6 +20,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ServicedvRepository extends JpaRepository<Servicedv, Integer> {
     List<Servicedv> findByCategoryId(Integer categoryId);
      
-    // Tìm kiếm dịch vụ theo tên (không phân biệt chữ hoa/chữ thường)
-    List<Servicedv> findByNameIgnoreCaseContaining(String name);
+    // Tìm kiếm dịch vụ theo tên (không phân biệt chữ hoa/chữ thường) - Custom query
+    @Query("SELECT s FROM Servicedv s WHERE LOWER(s.name) LIKE LOWER(CONCAT('%', :name, '%'))")
+    List<Servicedv> searchByNameIgnoreCaseContaining(@Param("name") String name);
 }
