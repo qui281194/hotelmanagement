@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -45,9 +46,19 @@ public class FeedbackAPIController {
         return new ResponseEntity<>(allFeedbacks, HttpStatus.OK);
     }
 
+    // Xóa dịch vụ theo ID
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> function_deleteFeedback(@PathVariable Integer feedbackId) {
-        feedbackService.deleteFeedback(feedbackId);
-        return new ResponseEntity<>("Feedback deleted successfully", HttpStatus.OK);
+    public ResponseEntity<String> deleteFeedback(@PathVariable Integer id) {
+        try {
+            feedbackService.deleteFeedback(id);
+            return new ResponseEntity<>("Xóa dịch vụ thành công", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Xóa dịch vụ thất bại", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/search")
+    public ResponseEntity<List<Feedback>> searchFeedback(@RequestParam("sender") String sender) {
+        List<Feedback> searchedServices = feedbackService.searchServices(sender);
+        return new ResponseEntity<>(searchedServices, HttpStatus.OK);
     }
 }

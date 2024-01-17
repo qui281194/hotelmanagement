@@ -43,6 +43,7 @@ public class FeedbackService {
         mailMessage.setText(str + "\n" + feedback.getContent());
 
         mailMessage.setSentDate(new Date());
+       
 
         javaMailSender.send(mailMessage);
     }
@@ -54,6 +55,8 @@ public class FeedbackService {
     public void saveFeedback(Feedback newFeedback) {
         Date date = new Date();
         newFeedback.setDated(date.toString());
+        newFeedback.markAsPending();
+        newFeedback.markAsUnresolved();
         feedbackRepository.save(newFeedback);
     }
 
@@ -68,7 +71,12 @@ public class FeedbackService {
      * Phương thức này xóa một phản hồi từ cơ sở dữ liệu.
      * @param feedbackId ID của phản hồi cần xóa.
      */
-    public void deleteFeedback(Integer feedbackId) {
-        feedbackRepository.deleteById(feedbackId);
+    public void deleteFeedback(Integer id) {
+        feedbackRepository.deleteById(id);
+    }
+    
+    // Tìm kiếm dịch vụ theo từ khóa
+    public List<Feedback> searchServices(String sender) {
+        return feedbackRepository.searchByNameIgnoreCaseContaining(sender);
     }
 }
