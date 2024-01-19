@@ -42,10 +42,10 @@ public class Blog {
     // Tác giả của bài đăng
     private String author;
 
-    // Liên kết với một phòng cụ thể trong khách sạn, nếu có
-    @ManyToOne
-    @JoinColumn(name = "room_id")
-    private Room relatedRoom;
+//    // Liên kết với một phòng cụ thể trong khách sạn, nếu có
+//    @ManyToOne
+//    @JoinColumn(name = "room_id")
+//    private Room relatedRoom;
 
     // Hình ảnh minh họa cho bài đăng (URL hoặc đường dẫn đến hình ảnh)
     private String imageUrl;
