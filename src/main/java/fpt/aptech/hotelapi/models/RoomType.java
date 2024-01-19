@@ -29,6 +29,6 @@ public class RoomType {
     private int id;
     private String room_type_name;
     
-    @OneToMany(mappedBy = "room_type_id" , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "roomType", cascade = CascadeType.ALL)
     private Collection<Room> roomCollection;
 }

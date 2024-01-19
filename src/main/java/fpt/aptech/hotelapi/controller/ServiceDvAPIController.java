@@ -34,9 +34,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ServiceDvAPIController {
      @Autowired
     private DVService dvService;
-   @org.springframework.beans.factory.annotation.Value("${upload.path}")
-    private String filterUpload;
-   
+  
    @GetMapping("/all")
     public ResponseEntity<List<Servicedv>> getAllServices() {
         List<Servicedv> services = dvService.findAll();
