@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.Collection;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +23,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "tbl_booking_status")
 public class BookingStatus {
@@ -30,6 +32,6 @@ public class BookingStatus {
     private int id;
     private String booking_status_name;
     
-    @OneToMany(mappedBy = "bookingStatus", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "booking_status_id", cascade = CascadeType.ALL)
     private Collection<Room> roomCollection;
 }

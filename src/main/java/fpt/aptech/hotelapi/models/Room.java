@@ -41,11 +41,11 @@ public class Room {
     private String room_description;
     private Boolean is_active;
    
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = RoomType.class)
     @JoinColumn(name = "room_type_id", referencedColumnName = "id")
-    private RoomType roomType;
+    private RoomType room_type_id;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY , targetEntity = BookingStatus.class)
     @JoinColumn(name = "booking_status_id", referencedColumnName = "id")
-    private BookingStatus bookingStatus;
+    private BookingStatus booking_status_id;
 }
