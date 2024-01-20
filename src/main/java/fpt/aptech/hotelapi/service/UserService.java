@@ -36,14 +36,14 @@ public class UserService {
 
     private Users mapToModel(UserDto userDto) {
         Users users = new Users();
-        users.setName(userDto.getName());
+        users.setUsername(userDto.getUsername());
         users.setEmail(userDto.getEmail());
         users.setPassword(userDto.getPassword());
         users.setAddress(userDto.getAddress());
         users.setPhone(userDto.getPhone());
 
         Role roleInfo = roleRepo.findById(userDto.getRole_id()).orElse(null);
-        users.setRoleId(roleInfo);
+        users.setRole_id(roleInfo);
 
         return users;
     }
@@ -51,17 +51,17 @@ public class UserService {
     private UserDto mapToDto(Users users) {
         UserDto userDto = new UserDto();
         userDto.setId(users.getId());
-        userDto.setName(users.getName());
+        userDto.setUsername(users.getUsername());
         userDto.setEmail(users.getEmail());
         userDto.setPassword(users.getPassword());
         userDto.setAddress(users.getAddress());
         userDto.setPhone(users.getPhone());
 
-        userDto.setRole_id(users.getRoleId().getId());
+        userDto.setRole_id(users.getRole_id().getId());
 
         RoleDto roleDto = new RoleDto(
-                users.getRoleId().getId(),
-                users.getRoleId().getRoleName()
+                users.getRole_id().getId(),
+                users.getRole_id().getRoleName()
         );
         userDto.setRoleInfo(roleDto);
 
@@ -105,7 +105,7 @@ public class UserService {
             Users existingUser = optionalUser.get();
 
             // Update the user information
-            existingUser.setName(updatedUserDto.getName());
+            existingUser.setUsername(updatedUserDto.getUsername());
             existingUser.setEmail(updatedUserDto.getEmail());
             existingUser.setAddress(updatedUserDto.getAddress());
             existingUser.setPhone(updatedUserDto.getPhone());
@@ -116,13 +116,16 @@ public class UserService {
         return null;
     }
 
-    public boolean deleteById(int id) {
-        Optional<Users> optionalUser = userRepo.findById(id);
-        if (optionalUser.isPresent()) {
-            userRepo.deleteById(id);
-            return true;
-        }
-        return false;
+//    public boolean deleteById(int id) {
+//        Optional<Users> optionalUser = userRepo.findById(id);
+//        if (optionalUser.isPresent()) {
+//            userRepo.deleteById(id);
+//            return true;
+//        }
+//        return false;
+//    }
+    public void deleteById(Integer id) {
+        userRepo.deleteById(id);
     }
 
     public List<UserDto> allUser() {

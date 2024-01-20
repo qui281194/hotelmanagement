@@ -4,9 +4,7 @@
  */
 package fpt.aptech.hotelapi.controller;
 
-// import fpt.aptech.api.dto.ChangePasswordDto;
 import fpt.aptech.hotelapi.dto.LoginDto;
-import fpt.aptech.hotelapi.dto.ServicedvDto;
 import fpt.aptech.hotelapi.dto.UserDto;
 import fpt.aptech.hotelapi.service.UserService;
 import java.util.List;
@@ -95,21 +93,7 @@ public class UserRestController {
         }
     }
 
-//    @PutMapping("/edit/{id}")
-//    public ResponseEntity<UserDto> function_editUser(
-//            @PathVariable("id") int id,
-//            @RequestBody UserDto userDto
-//    ) {
-//        UserDto updatedUser = userService.editUser(userDto);
-//        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
-////        userDto.setId(id);
-////        UserDto updatedUser = userService.editUser(userDto);
-////        if (updatedUser != null) {
-////            return ResponseEntity.ok(updatedUser);
-////        } else {
-////            return ResponseEntity.notFound().build();
-////        }
-//    }
+
     @PutMapping("/edit/{id}")
     public ResponseEntity<UserDto> function_editUser(
             @PathVariable("id") int id,
@@ -118,7 +102,7 @@ public class UserRestController {
         UserDto existingUser = userService.findOne(id);
         if (existingUser != null) {
             // Update the user information
-            existingUser.setName(updatedUserDto.getName());
+            existingUser.setUsername(updatedUserDto.getUsername());
             existingUser.setEmail(updatedUserDto.getEmail());
             existingUser.setAddress(updatedUserDto.getAddress());
             existingUser.setPhone(updatedUserDto.getPhone());
@@ -134,14 +118,11 @@ public class UserRestController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> function_deleteUser(@PathVariable("id") int id) {
-        boolean deleted = userService.deleteById(id);
-        if (deleted) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> function_deleteUser(@PathVariable Integer id) {
+        userService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }
