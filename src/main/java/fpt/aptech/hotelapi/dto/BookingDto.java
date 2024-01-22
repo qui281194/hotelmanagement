@@ -23,11 +23,11 @@ public class BookingDto {
     private LocalDate booking_from;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate booking_to;
+    
     private int total_day;
     private double total_price;
     private int number_of_member;
-    
-    private boolean active;
+    private Boolean is_active;
     
     private int booking_current_id;
     private BookingCurrentDto booking_current_info;
