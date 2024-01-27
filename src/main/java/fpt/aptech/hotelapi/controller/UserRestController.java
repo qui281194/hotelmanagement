@@ -92,6 +92,11 @@ public class UserRestController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build(); // ngược lại email có r trả về CONFLICT
         }
     }
+    
+    @PostMapping("/createnewguest")
+    public UserDto function_createNewGuest(@RequestBody UserDto newGuestDto) {
+        return userService.registerNewGuest(newGuestDto);
+    }
 
 
     @PutMapping("/edit/{id}")

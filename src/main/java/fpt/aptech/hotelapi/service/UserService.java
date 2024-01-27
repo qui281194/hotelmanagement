@@ -160,6 +160,8 @@ public class UserService {
     }
 
     //For Staff
+    
+    
     //For Customer
     public UserDto registerNewCustomer(UserDto userDto) {
         // Kiểm tra xem email đã tồn tại trong cơ sở dữ liệu hay chưa
@@ -178,6 +180,20 @@ public class UserService {
         Users responseUser = userRepo.save(newCustomer);
 
         return mapToDto(responseUser);
+    }
+    
+    public UserDto registerNewGuest(UserDto newGuestDto) {
+        newGuestDto.setRole_id(3);
+        
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(newGuestDto.getPassword());
+        newGuestDto.setPassword(encodedPassword);
+        
+        Users newGuest = mapToModel(newGuestDto);
+        
+        Users response = userRepo.save(newGuest);
+        
+        return mapToDto(response);
     }
 
     //Kiểm tra trùng email

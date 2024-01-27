@@ -13,6 +13,7 @@ import fpt.aptech.hotelapi.models.RoomType;
 import fpt.aptech.hotelapi.repository.BookingStatusRepository;
 import fpt.aptech.hotelapi.repository.RoomRepository;
 import fpt.aptech.hotelapi.repository.RoomTypeRepository;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,6 +90,20 @@ public class RoomService {
     public List<RoomDto> allRoomVacancy() {
         return _roomRepo.findAll().stream()
                 .filter(r -> r.getBooking_status_id().getId() == 1)
+                .map(mapper -> mapToDto(mapper))
+                .collect(Collectors.toList());
+    }
+    
+    public List<RoomDto> allRoomSortedByActive() {
+        return _roomRepo.findAll().stream()
+                .sorted((p1 , p2) -> -p1.getIs_active().compareTo(p2.getIs_active()))
+                .map(mapper -> mapToDto(mapper))
+                .collect(Collectors.toList());
+    }
+    
+    public List<RoomDto> allRoomActiveAndVancancy() {
+        return _roomRepo.findAll().stream()
+                .filter(r -> r.getBooking_status_id().getId() == 1 && r.getIs_active() == true)
                 .map(mapper -> mapToDto(mapper))
                 .collect(Collectors.toList());
     }

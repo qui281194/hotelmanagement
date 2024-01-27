@@ -40,6 +40,16 @@ public class RoomAPIController {
         return _roomService.allRoomVacancy();
     }
     
+    @GetMapping("/allroomsortedbyactive")
+    public List<RoomDto> function_allRoomSortedByActive() {
+        return _roomService.allRoomSortedByActive();
+    }
+    
+    @GetMapping("/allroomactiveandvacancy")
+    public List<RoomDto> function_allRoomActiveAndVacancy() {
+        return _roomService.allRoomActiveAndVancancy();
+    }
+    
     @GetMapping("/find/{roomId}")
     public RoomDto function_findRoom(@PathVariable("roomId") int roomId) {
         return _roomService.findRoom(roomId);
