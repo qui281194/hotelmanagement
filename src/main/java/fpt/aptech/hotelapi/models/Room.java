@@ -17,6 +17,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.Collection;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -54,4 +55,7 @@ public class Room {
     
     @OneToMany(mappedBy = "room_id" , cascade = CascadeType.ALL)
     private Collection<Booking> bookingCollection;
+    
+    @OneToMany(mappedBy = "room", cascade = CascadeType.PERSIST)
+    private List<Review> reviews;
 }

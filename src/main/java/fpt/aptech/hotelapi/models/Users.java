@@ -7,6 +7,7 @@ package fpt.aptech.hotelapi.models;
 import java.io.Serializable;
 import jakarta.persistence.*;
 import java.util.Collection;
+import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -43,4 +44,6 @@ public class Users implements Serializable {
     @OneToMany(mappedBy = "customer_id" , cascade = CascadeType.ALL)
     private Collection<Booking> bookingCollection;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+    private List<Review> reviews;
 }
