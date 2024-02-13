@@ -100,6 +100,7 @@ public class UserService {
     }
 
     public UserDto updateUser(UserDto updatedUserDto) {
+        
         Optional<Users> optionalUser = userRepo.findById(updatedUserDto.getId());
         if (optionalUser.isPresent()) {
             Users existingUser = optionalUser.get();
@@ -115,6 +116,7 @@ public class UserService {
         }
         return null;
     }
+    
 
 //    public boolean deleteById(int id) {
 //        Optional<Users> optionalUser = userRepo.findById(id);
@@ -132,6 +134,22 @@ public class UserService {
         List<Users> users = userRepo.findAll();
         return users.stream().map(this::mapToDto).collect(Collectors.toList());
     }
+    
+    public List<UserDto> allStaff() {
+        return userRepo.findAll()
+                .stream()
+                .filter(u -> u.getRole_id().getId() == 2)
+                .map(mapper -> mapToDto(mapper))
+                .toList();
+    }
+    
+    public List<UserDto> allCustomer() {
+        return userRepo.findAll()
+                .stream()
+                .filter(u -> u.getRole_id().getId() == 3)
+                .map(mapper -> mapToDto(mapper))
+                .toList();
+    }
 
     public UserDto findOne(int id) {
         Optional<Users> optionalUser = userRepo.findById(id);
@@ -140,6 +158,14 @@ public class UserService {
             return mapToDto(user);
         }
         return null;
+    }
+    
+    public UserDto findByEmail(String email) {
+        return userRepo.findAll()
+                .stream()
+                .filter(u -> u.getEmail().equals(email))
+                .map(mapper -> mapToDto(mapper))
+                .findFirst().orElse(null);
     }
 
     public boolean changePassword(int id, String currentPassword, String newPassword

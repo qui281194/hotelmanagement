@@ -5,6 +5,8 @@
 package fpt.aptech.hotelapi.controller;
 
 import fpt.aptech.hotelapi.dto.BookingDto;
+import fpt.aptech.hotelapi.dto.RoomDto;
+import fpt.aptech.hotelapi.dto.SearchDto;
 import fpt.aptech.hotelapi.service.BookingService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,12 @@ public class BookingAPIController {
         return _bookingService.allBooking();
     }
     
+    @GetMapping("/allbookingbycustomer/{customerId}")
+    public List<BookingDto> function_allBookingByCustomer(@PathVariable("customerId") int customerId) {
+        return _bookingService.allBookingByCustomer(customerId);
+    }
+    
+    
     @GetMapping("/confirm/{id}")
     public BookingDto function_confirmBooking(@PathVariable("id") int id) {
         return _bookingService.confirmBooking(id);
@@ -54,9 +62,26 @@ public class BookingAPIController {
         return _bookingService.cancelBooking(id);
     }
     
-    
     @PostMapping("/create")
     public BookingDto function_createNewBooking(@RequestBody BookingDto newBookingDto) {
         return _bookingService.createNewBooking(newBookingDto);
     }
+    
+    @PostMapping("/confirmbookingdetail")
+    public BookingDto function_confirmBookingDetailByCustomer(@RequestBody BookingDto newBookingDto) {
+        return _bookingService.confirmBookingDetailByCustomer(newBookingDto);
+    }
+    
+    @PostMapping("/createbookingbycustomer")
+    public BookingDto function_createBookingByCustomer(@RequestBody BookingDto newBookingDto) {
+        return _bookingService.createNewBookingByCustomer(newBookingDto);
+    }
+    
+    //Room Available For Booking
+    @PostMapping("/availableroomforbooking")
+    public List<RoomDto> function_availableRoomForBooking(@RequestBody SearchDto searchDto) {
+        System.out.println(searchDto);
+        return _bookingService.searchAvailableRoomForBooking(searchDto);
+    }
+    
 }

@@ -40,6 +40,7 @@ public class Room {
     
     private String room_no;
     private Double room_price;
+    
     private String room_image;
     private Integer room_capacity;
     private String room_description;

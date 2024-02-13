@@ -27,6 +27,21 @@ public class UserRestController {
         this.userService = _userService;
     }
 
+    @GetMapping("/allstaff")
+    public List<UserDto> allStaff() {
+        return userService.allStaff();
+    }
+    
+    @GetMapping("/allcustomer")
+    public List<UserDto> allCustomer() {
+        return userService.allCustomer();
+    }
+    
+    @GetMapping("/findbyemail/{email}")
+    public UserDto function_findByEmail(@PathVariable("email") String email) {
+        return userService.findByEmail(email);
+    }
+    
     @PostMapping("/login")
     public ResponseEntity<UserDto> function_login(
             @RequestBody LoginDto loginDto
@@ -50,6 +65,11 @@ public class UserRestController {
     public UserDto function_UserById(@PathVariable("id") int id) {
         return userService.findOne(id);
     }
+    
+    @GetMapping("/findbyid/{id}")
+    public UserDto function_findUserById(@PathVariable("id") int id) {
+        return userService.findOne(id);
+    }
 
     @PostMapping("/create")
     public ResponseEntity<UserDto> function_createNewUser(
@@ -64,6 +84,19 @@ public class UserRestController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build(); // ngược lại email có r trả về CONFLICT
         }
     }
+    
+    @PostMapping("/createnewstaff")
+    public UserDto function_createNewStaff(@RequestBody UserDto newStaffDto) {
+//        System.out.println(newStaffDto);
+        return userService.createNewUser(newStaffDto);
+    }
+    
+    @PostMapping("/createnewcustomer")
+    public UserDto function_createNewCustomer(@RequestBody UserDto newCustomerDto) {
+        return userService.createNewUser(newCustomerDto);
+    }
+    
+    
 
     @PostMapping("/{id}/change-password")
     public ResponseEntity<String> changePassword(
