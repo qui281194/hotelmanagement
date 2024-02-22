@@ -160,6 +160,10 @@ public class BookingService {
                 .map(mapper -> mapToDto(mapper)).collect(Collectors.toList());
     }
     
+    public BookingDto findById(int id) {
+        return _bookingRepo.findById(id).map(mapper -> mapToDto(mapper)).orElse(null);
+    }
+    
     public List<BookingDto> allBookingByCustomer(int customerId) {
         return _bookingRepo.findAll().stream()
                 .filter(b -> b.getCustomer_id().getId() == customerId)

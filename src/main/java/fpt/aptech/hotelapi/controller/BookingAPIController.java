@@ -36,6 +36,11 @@ public class BookingAPIController {
         return _bookingService.allBooking();
     }
     
+    @GetMapping("/findbyid/{id}")
+    public BookingDto function_findBookingById(@PathVariable("id") int id) {
+        return _bookingService.findById(id);
+    }
+    
     @GetMapping("/allbookingbycustomer/{customerId}")
     public List<BookingDto> function_allBookingByCustomer(@PathVariable("customerId") int customerId) {
         return _bookingService.allBookingByCustomer(customerId);
