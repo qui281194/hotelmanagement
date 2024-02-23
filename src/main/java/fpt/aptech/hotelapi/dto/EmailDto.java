@@ -4,10 +4,10 @@
  */
 package fpt.aptech.hotelapi.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -16,14 +16,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
-    private Integer id;
-    private String username;
-    private String email;
-    private String password;
-    private String address;
-    private String phone;
-    private Boolean active;
-    private Integer role_id;
-    private RoleDto roleInfo;
+public class EmailDto {
+    private String to;
+    private String subject;
+    private String text;
+    private MultipartFile attachment;
 }

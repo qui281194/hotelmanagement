@@ -36,6 +36,8 @@ public class Users implements Serializable {
     private String address;
     @Column(name = "phone")
     private String phone;
+    @Column(name = "active")
+    private Boolean active;
     
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Role.class)

@@ -5,12 +5,9 @@
 package fpt.aptech.hotelapi.controller;
 
 import fpt.aptech.hotelapi.dto.ServiceCategoryDto;
-import fpt.aptech.hotelapi.dto.ServicedvDto;
 import fpt.aptech.hotelapi.models.Servicedv;
 import fpt.aptech.hotelapi.service.DVService;
-import fpt.aptech.hotelapi.service.ServiceDV;
 import java.util.List;
-import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;

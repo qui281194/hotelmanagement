@@ -11,6 +11,7 @@ import fpt.aptech.hotelapi.models.Role;
 import fpt.aptech.hotelapi.models.Users;
 import fpt.aptech.hotelapi.repository.RoleRepository;
 import fpt.aptech.hotelapi.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,6 +42,7 @@ public class UserService {
         users.setPassword(userDto.getPassword());
         users.setAddress(userDto.getAddress());
         users.setPhone(userDto.getPhone());
+        users.setActive(userDto.getActive());
 
         Role roleInfo = roleRepo.findById(userDto.getRole_id()).orElse(null);
         users.setRole_id(roleInfo);
@@ -56,6 +58,7 @@ public class UserService {
         userDto.setPassword(users.getPassword());
         userDto.setAddress(users.getAddress());
         userDto.setPhone(users.getPhone());
+        userDto.setActive(users.getActive());
 
         userDto.setRole_id(users.getRole_id().getId());
 
@@ -72,11 +75,12 @@ public class UserService {
     public UserDto login(LoginDto loginDto) {
         Optional<Users> optionalUser = userRepo.findByEmail(loginDto.getEmail());
         if (optionalUser.isPresent()) {
-            Users checkLogin = optionalUser.get();
+                Users checkLogin = optionalUser.get();
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             if (passwordEncoder.matches(loginDto.getPassword(), checkLogin.getPassword())) {
                 return mapToDto(checkLogin);
             }
+            
         }
         return null;
     }
@@ -87,6 +91,7 @@ public class UserService {
         if (userRepo.existsByEmail(userDto.getEmail())) {
             return null; // Trả về null nếu email đã tồn tại
         }
+        userDto.setActive(true);
 
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
@@ -100,34 +105,12 @@ public class UserService {
     }
 
     public UserDto updateUser(UserDto updatedUserDto) {
+        Users updateUser = mapToModel(updatedUserDto);
+        updateUser.setId(updatedUserDto.getId());
         
-        Optional<Users> optionalUser = userRepo.findById(updatedUserDto.getId());
-        if (optionalUser.isPresent()) {
-            Users existingUser = optionalUser.get();
-
-            // Update the user information
-            existingUser.setUsername(updatedUserDto.getUsername());
-            existingUser.setEmail(updatedUserDto.getEmail());
-            existingUser.setAddress(updatedUserDto.getAddress());
-            existingUser.setPhone(updatedUserDto.getPhone());
-
-            Users updatedUser = userRepo.save(existingUser);
-            return mapToDto(updatedUser);
-        }
-        return null;
-    }
-    
-
-//    public boolean deleteById(int id) {
-//        Optional<Users> optionalUser = userRepo.findById(id);
-//        if (optionalUser.isPresent()) {
-//            userRepo.deleteById(id);
-//            return true;
-//        }
-//        return false;
-//    }
-    public void deleteById(Integer id) {
-        userRepo.deleteById(id);
+        Users response = userRepo.save(updateUser);
+        
+        return mapToDto(response);
     }
 
     public List<UserDto> allUser() {
@@ -152,12 +135,8 @@ public class UserService {
     }
 
     public UserDto findOne(int id) {
-        Optional<Users> optionalUser = userRepo.findById(id);
-        if (optionalUser.isPresent()) {
-            Users user = optionalUser.get();
-            return mapToDto(user);
-        }
-        return null;
+        Users userInfo = userRepo.findById(id).orElse(null);
+        return mapToDto(userInfo);
     }
     
     public UserDto findByEmail(String email) {
@@ -195,6 +174,8 @@ public class UserService {
             return null; // Trả về null nếu email đã tồn tại
         }
         userDto.setRole_id(3);
+        userDto.setActive(true);
+        
 
         //Mã hóa mật khẩu trước khi lưu trữ vào cơ sở dữ liệu
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -226,4 +207,5 @@ public class UserService {
     public boolean existsByEmail(String email) {
         return userRepo.findByEmail(email) != null;
     }
+    
 }

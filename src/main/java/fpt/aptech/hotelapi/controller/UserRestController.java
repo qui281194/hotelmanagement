@@ -31,22 +31,21 @@ public class UserRestController {
     public List<UserDto> allStaff() {
         return userService.allStaff();
     }
-    
+
     @GetMapping("/allcustomer")
     public List<UserDto> allCustomer() {
         return userService.allCustomer();
     }
-    
+
     @GetMapping("/findbyemail/{email}")
     public UserDto function_findByEmail(@PathVariable("email") String email) {
         return userService.findByEmail(email);
     }
-    
+
     @PostMapping("/login")
     public ResponseEntity<UserDto> function_login(
             @RequestBody LoginDto loginDto
     ) {
-
         UserDto loggedInUser = userService.login(loginDto);
         if (loggedInUser != null) {
             return ResponseEntity.ok(loggedInUser);
@@ -61,11 +60,11 @@ public class UserRestController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public UserDto function_UserById(@PathVariable("id") int id) {
-        return userService.findOne(id);
-    }
-    
+//    @GetMapping("/{id}")
+//    public UserDto function_UserById(@PathVariable("id") int id) {
+//        return userService.findOne(id);
+//    }
+
     @GetMapping("/findbyid/{id}")
     public UserDto function_findUserById(@PathVariable("id") int id) {
         return userService.findOne(id);
@@ -84,27 +83,25 @@ public class UserRestController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build(); // ngược lại email có r trả về CONFLICT
         }
     }
-    
+
     @PostMapping("/createnewstaff")
     public UserDto function_createNewStaff(@RequestBody UserDto newStaffDto) {
 //        System.out.println(newStaffDto);
         return userService.createNewUser(newStaffDto);
     }
-    
+
     @PostMapping("/createnewcustomer")
     public UserDto function_createNewCustomer(@RequestBody UserDto newCustomerDto) {
         return userService.createNewUser(newCustomerDto);
     }
-    
-    
 
-    @PostMapping("/{id}/change-password")
+    @PostMapping("/{userId}/change-password")
     public ResponseEntity<String> changePassword(
-            @PathVariable int id,
+            @PathVariable int userId,
             @RequestParam String currentPassword,
             @RequestParam String newPassword
     ) {
-        boolean passwordChanged = userService.changePassword(id, currentPassword, newPassword);
+        boolean passwordChanged = userService.changePassword(userId, currentPassword, newPassword);
         if (passwordChanged) {
             return ResponseEntity.ok("Password changed successfully.");
         } else {
@@ -125,42 +122,15 @@ public class UserRestController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build(); // ngược lại email có r trả về CONFLICT
         }
     }
-    
+
     @PostMapping("/createnewguest")
     public UserDto function_createNewGuest(@RequestBody UserDto newGuestDto) {
         return userService.registerNewGuest(newGuestDto);
     }
 
-
-    @PutMapping("/edit/{id}")
-    public ResponseEntity<UserDto> function_editUser(
-            @PathVariable("id") int id,
-            @RequestBody UserDto updatedUserDto
-    ) {
-        UserDto existingUser = userService.findOne(id);
-        if (existingUser != null) {
-            // Update the user information
-            existingUser.setUsername(updatedUserDto.getUsername());
-            existingUser.setEmail(updatedUserDto.getEmail());
-            existingUser.setAddress(updatedUserDto.getAddress());
-            existingUser.setPhone(updatedUserDto.getPhone());
-
-            UserDto updatedUser = userService.updateUser(existingUser);
-            if (updatedUser != null) {
-                return ResponseEntity.ok(updatedUser);
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-            }
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> function_deleteUser(@PathVariable Integer id) {
-        userService.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @PutMapping("/update")
+    public UserDto function_UpdateUser(@RequestBody UserDto updatedUserDto) {
+        return userService.updateUser(updatedUserDto);
     }
 
 }
