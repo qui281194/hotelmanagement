@@ -20,6 +20,8 @@ public interface UserRepository extends JpaRepository<Users, Integer> {
 
     boolean existsByEmail(String email);
     
+    boolean existsByEmailIgnoreCase(String email);
+    
     @Query("SELECT s FROM Users s WHERE LOWER(s.username) LIKE LOWER(CONCAT('%', :username, '%'))")
     List<Users> searchByNameIgnoreCaseContaining(@Param("username") String username);
 }
