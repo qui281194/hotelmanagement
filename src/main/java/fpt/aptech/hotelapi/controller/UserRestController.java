@@ -105,7 +105,7 @@ public class UserRestController {
         if (passwordChanged) {
             return ResponseEntity.ok("Password changed successfully.");
         } else {
-            return ResponseEntity.badRequest().body("Failed to change password. Please check your current password.");
+            return ResponseEntity.ok("Failed to change password. Please check your current password.");
         }
     }
 
